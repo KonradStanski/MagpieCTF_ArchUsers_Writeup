@@ -44,10 +44,14 @@ function read_file_to_bytes($filename) {
 ?>
 ```
 
+<br/>
+<br/>
+<br/>
+
 ## Solution
 
 When I learned PHP, I was taught that one should never use a simple `==` comparison when dealing with password.
-Timing attacks are one potential risk, but in this case, pulling one off would likely be too time consuming.
+Timing attacks are one potential risk, but in this case, pulling one off would likely be too difficult\* for this competition.
 
 Similar to JavaScript, I recalled that the `==` operator in PHP performs what is known as type juggling.
 Type juggling is essentially changing the type of a variable being compared so that the comparison makes logical sense.
@@ -77,3 +81,50 @@ Of note is that `3862366634306633` is the hex representation of the ASCII charac
 Consequently, I converted `4062869629976844658` into hex to get `38623667077E1972`. I then used a hex editor to convert `38623667077E1972` to the ASCII characters `8b6g~r` (two of which are non-printable characters).
 
 Storing this string in a file named `key` and uploading it to the server got us the flag `magpie{l0053_c0mp4r150n_l34d5_t0_tr0ub13}`.
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+## \*Additional notes on timing attacks
+
+Timing attacks take advantage of how long the code takes to execute given different inputs. String comparison using `==` (or even `===`) would be vulnerable to a timing attack.
+
+The comparison of interest is `$to_check == $password`. For simplicity, let's assume we have control over `$to_check` and `$password` is unknown. Let's also assume delay due to networking is constant.
+
+The `==` operator is internally implemented in PHP in a fashion similar to the following pseudocode when applied to strings:
+
+```python
+if type(to_check) is not type(password):
+  # Perform type juggling. This is what I actually exploited.
+if len(to_check) is not len(password):
+  # Interesting, the code returns fastest when the lengths differ.
+  return False
+for i in range(len(to_check)):
+  if to_check[i] is not password[i]:
+    # It returns next fastest when the first characters do not match.
+    return False
+# Equality is the slowest.
+return True
+```
+
+On a scale of nanoseconds, these differences in times can actually divulge information about what the password is. The easiest information to divulge via a timing attack is the length of the password.
+
+Suppose I write some code to send one million values of `to_check` that are of length 1. Then, I average the amount of time each of these requests take. I repeat this process for values of `to_check` that are of length 2, 3, 4, 5, 6, 7, and 8. After sending my 8 million requests, I will have 8 averages. One of these averages should be noticeably larger than the others. Suppose our average for values of length 8 is the highest. From this, I can conclude with high probability that the password is in fact of length 8.
+
+Once we determine the password length, we can start to determine the contents of the password. Let's assume this password is made up of 8-bit characters only. We can try all 2^8 = 256 possible characters as the first character of `to_check`. That is, `\x00\x00\x00\x00\x00\x00\x00\x00`, `\x01\x00\x00\x00\x00\x00\x00\x00`, `\x02\x00\x00\x00\x00\x00\x00\x00`, ..., `\xFF\x00\x00\x00\x00\x00\x00\x00`. We may have to send all of these 256 values one million times each and compute an average. This is where this attack gets infeasible, as I was not interested in launching what would've been seen as a DOS attack against our gracious CTF hosts.
+
+However, suppose I was evil and did want to give the magpieCTF servers a beating. By figuring out which average is highest, I've now discovered the first character of the password. I can repeat this process for characters 2, 3, 4, 5, 6, 7, and 8. You might think this is crazy; I'm guessing 8 million passwords to get the length and 8 million passwords per character. However, it's actually substantially easier to crack a password this way than by performing a brute force attack.
+
+Some math:
+A password of length 8 takes up to `(2^8)^8 = 18446744073709551616` guesses to crack.
+The timing attack I propose takes `8(1000000) + 256(1000000) * 8 = 2056000000` guesses.
+
+Why didn't I try this attack? My assumption that delay due to networking is constant is completely false. Network delay would seriously mess up my ability to pull of this attack, as timing attacks require nanosecond resolution and packets can take hundreds of milliseconds to travel. I could compensate for this by increasing one million to one billion guesses per average. However, I wanted to be a reasonable competitor, and chose to exploit type juggling instead.
