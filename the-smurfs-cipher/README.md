@@ -47,7 +47,7 @@ function read_file_to_bytes($filename) {
 
 ## Solution
 
-When I learned PHP, I was taught that one should never use a simple `==` comparison when dealing with password.
+When I learned PHP, I was taught that one should never use a simple `==` comparison when dealing with passwords.
 Timing attacks are one potential risk, but in this case, pulling one off would likely be too difficult\* for this competition.
 
 Similar to JavaScript, I recalled that the `==` operator in PHP performs what is known as type juggling.
@@ -93,7 +93,7 @@ The `==` operator is internally implemented in PHP in a fashion similar to the f
 
 ```python
 if type(to_check) is not type(password):
-  # Perform type juggling. This is what I actually exploited.
+  # Perform type juggling. This is what I exploited.
 if len(to_check) is not len(password):
   # Interesting, the code returns fastest when the lengths differ.
   return False
@@ -105,12 +105,12 @@ for i in range(len(to_check)):
 return True
 ```
 
-On a scale of nanoseconds, these differences in times can actually divulge information about what the password is.
+On a scale of nanoseconds, these differences in times can divulge information about what the password is.
 The easiest information to divulge via a timing attack is the length of the password.
 
 Suppose I write some code to send one million values of `to_check` that are of length 1.
-Then, I average the amount of time each of these requests take.
-I repeat this process for values of `to_check` that are of length 2, 3, 4, 5, 6, 7, and 8.
+Then, I compute the average amount of time a request takes.
+I repeat this process for values of `to_check` that are of lengths 2, 3, 4, 5, 6, 7, and 8.
 After sending my 8 million requests, I will have 8 averages.
 One of these averages should be noticeably larger than the others.
 Suppose our average for values of length 8 is the highest.
@@ -135,6 +135,6 @@ The timing attack I propose takes `8(1000000) + 256(1000000) * 8 = 2056000000` g
 
 Why didn't I try this attack?
 My assumption that delay due to networking is constant is completely false.
-Network delay would seriously mess up my ability to pull of this attack, as timing attacks require nanosecond resolution and packets can take hundreds of milliseconds to travel.
+Network delay would seriously mess up my ability to pull off this attack, as timing attacks require nanosecond resolution and packets can take hundreds of milliseconds to travel.
 I could compensate for this by increasing one million to one billion guesses per average.
-However, I wanted to be a reasonable competitor, and chose to exploit type juggling instead.
+However, I wanted to be a reasonable competitor and chose to exploit type juggling instead.
