@@ -151,7 +151,7 @@ However, it's substantially easier to crack a password this way than by performi
 
 Some math:
 A password of length 8 takes up to $$(2^8)^8 = 18446744073709551616$$ guesses to crack.
-The timing attack would take $$8(1000000) + 256(1000000) \times 8 = 2056000000$$ guesses to crack the password.
+The timing attack proposed would only take $$8(1000000) + 256(1000000) \times 8 = 2056000000$$ guesses to crack the password.
 
 Why didn't I try this attack?
 My assumption that delay due to networking is constant is completely false.
