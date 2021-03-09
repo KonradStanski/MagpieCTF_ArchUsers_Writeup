@@ -76,7 +76,7 @@ $cipher_bytes + hexdec("d34db33f") = 4062869629976844658
 After some experimentation, I discovered that `4062869626431759923` in hex is `3862366634306633`.
 Of note is that `3862366634306633` is the hex representation of the ASCII characters `8b6f40f3`, which is the cipher we were given.
 Consequently, I converted `4062869629976844658` into hex to get `38623667077E1972`.
-I then used a hex editor to convert `38623667077E1972` to the ASCII characters `8b6g~r` (two of which are non-printable characters).
+I then used a hex editor to convert `38623667077E1972` to the ASCII characters `8b6g?~?r` (the two `?`s are non-printable characters).
 
 Storing this string in a file named `key` and uploading it to the server got us the flag `magpie{l0053_c0mp4r150n_l34d5_t0_tr0ub13}`.
 
