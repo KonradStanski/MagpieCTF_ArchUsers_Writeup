@@ -126,7 +126,7 @@ This is where this attack gets infeasible, as I was not interested in launching 
 However, suppose I was evil and did want to give the magpieCTF servers a beating.
 By figuring out which average is highest, I've now discovered the first character of the password.
 I can repeat this process for characters 2, 3, 4, 5, 6, 7, and 8.
-You might think this is crazy; I'm guessing 8 million passwords to get the length and 8 million passwords per character.
+You might think this is crazy; I'm guessing 8 million passwords to get the length and 256 million passwords per character.
 However, it's substantially easier to crack a password this way than by performing a brute force attack.
 
 Some math:
