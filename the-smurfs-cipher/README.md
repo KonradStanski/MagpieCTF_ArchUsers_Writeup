@@ -1,5 +1,7 @@
 # The Smurfs Cipher
 
+Kyle Hennig
+
 ## Description
 
 We were given a website that accepted a file upload.
@@ -60,7 +62,12 @@ I suspected that this would be how we get the code above to echo the flag we wan
 My goal became setting the variable `$to_check` to the integer zero.
 We only had control over the file uploaded, so the contents of this file were my key to the kingdom.
 One restriction was that this key had to be 8 bytes or the function would return early.
-Another restriction is that `$key_bytes` is only used in one place: `$to_check = ($cipher_bytes + hexdec("d34db33f")) ^ $key_bytes;`
+Another restriction is that `$key_bytes` is only used in one place:
+
+```
+$to_check = ($cipher_bytes + hexdec("d34db33f")) ^ $key_bytes;
+```
+
 The `^` symbol is used to exclusive or (XOR) two values together, and one property of XOR is that any number XORed with itself equals zero.
 Thus, I wanted `$cipher_bytes + hexdec("d34db33f")` to equal `$key_bytes`.
 
@@ -78,7 +85,11 @@ Of note is that `3862366634306633` is the hex representation of the ASCII charac
 Consequently, I converted `4062869629976844658` into hex to get `38623667077E1972`.
 I then used a hex editor to convert `38623667077E1972` to the ASCII characters `8b6g?~?r` (the two `?`s are non-printable characters).
 
-Storing this string in a file named `key` and uploading it to the server got us the flag `magpie{l0053_c0mp4r150n_l34d5_t0_tr0ub13}`.
+Storing this string in a file named `key` and uploading it to the server got us the flag:
+
+```
+magpie{l0053_c0mp4r150n_l34d5_t0_tr0ub13}
+```
 
 ## \*Additional notes on timing attacks
 
@@ -118,8 +129,17 @@ From this, I can conclude with high probability that the password is in fact of 
 
 Once we determine the password length, we can start to determine the contents of the password.
 Let's assume this password is made up of 8-bit characters only.
-We can try all 2^8 = 256 possible characters as the first character of `to_check`.
-That is, `\x00\x00\x00\x00\x00\x00\x00\x00`, `\x01\x00\x00\x00\x00\x00\x00\x00`, `\x02\x00\x00\x00\x00\x00\x00\x00`, ..., `\xFF\x00\x00\x00\x00\x00\x00\x00`.
+We can try all $2^8 = 256$ possible characters as the first character of `to_check`.
+That is:
+
+```
+\x00\x00\x00\x00\x00\x00\x00\x00
+\x01\x00\x00\x00\x00\x00\x00\x00
+\x02\x00\x00\x00\x00\x00\x00\x00
+...
+\xFF\x00\x00\x00\x00\x00\x00\x00
+```
+
 We may have to send all of these 256 values one million times each and compute an average.
 This is where this attack gets infeasible, as I was not interested in launching what would've been seen as a DOS attack against our gracious CTF hosts.
 
@@ -130,8 +150,8 @@ You might think this is crazy; I'm guessing 8 million passwords to get the lengt
 However, it's substantially easier to crack a password this way than by performing a brute force attack.
 
 Some math:
-A password of length 8 takes up to `(2^8)^8 = 18446744073709551616` guesses to crack.
-The timing attack I propose takes `8(1000000) + 256(1000000) * 8 = 2056000000` guesses.
+A password of length 8 takes up to $$(2^8)^8 = 18446744073709551616$$ guesses to crack.
+The timing attack would take $$8(1000000) + 256(1000000) \times 8 = 2056000000$$ guesses to crack the password.
 
 Why didn't I try this attack?
 My assumption that delay due to networking is constant is completely false.
