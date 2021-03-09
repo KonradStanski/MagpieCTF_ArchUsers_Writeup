@@ -119,9 +119,9 @@ return True
 On a scale of nanoseconds, these differences in times can divulge information about what the password is.
 The easiest information to divulge via a timing attack is the length of the password.
 
-Suppose I write some code to send one million values of `to_check` that are of length 1.
+Suppose I write some code to send one million values of `$to_check` that are of length 1.
 Then, I compute the average amount of time a request takes.
-I repeat this process for values of `to_check` that are of lengths 2, 3, 4, 5, 6, 7, and 8.
+I repeat this process for values of `$to_check` that are of lengths 2, 3, 4, 5, 6, 7, and 8.
 After sending my 8 million requests, I will have 8 averages.
 One of these averages should be noticeably larger than the others.
 Suppose our average for values of length 8 is the highest.
@@ -129,7 +129,7 @@ From this, I can conclude with high probability that the password is in fact of 
 
 Once we determine the password length, we can start to determine the contents of the password.
 Let's assume this password is made up of 8-bit characters only.
-We can try all $2^8 = 256$ possible characters as the first character of `to_check`.
+We can try all $2^8 = 256$ possible characters as the first character of `$to_check`.
 That is:
 
 ```
