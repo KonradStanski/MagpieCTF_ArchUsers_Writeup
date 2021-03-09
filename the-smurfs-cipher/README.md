@@ -64,7 +64,7 @@ We only had control over the file uploaded, so the contents of this file were my
 One restriction was that this key had to be 8 bytes or the function would return early.
 Another restriction is that `$key_bytes` is only used in one place:
 
-```
+```php
 $to_check = ($cipher_bytes + hexdec("d34db33f")) ^ $key_bytes;
 ```
 
