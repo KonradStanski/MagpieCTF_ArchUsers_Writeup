@@ -7,7 +7,7 @@ all: $(PDF_TARGETS)
 	pandoc metadata.yaml $< \
 		--from markdown \
 		--pdf-engine=xelatex \
-		--highlight-style pygments \
+		--highlight-style haddock \
 		-V papersize:letter \
 		-o $@
 
