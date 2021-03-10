@@ -2,6 +2,7 @@
 fontsize: 12pt
 geometry:
   - margin=2cm
+# For wrapping long lines inside code blocks.
 header-includes:
   - \usepackage{fvextra}
   - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
